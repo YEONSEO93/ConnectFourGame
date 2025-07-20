@@ -1,4 +1,5 @@
 @using ConnectFour
+@using System.Drawing
 @inject GameState State
 
 <nav>
@@ -21,9 +22,9 @@
 <HeadContent>
     <style>
         :root {
-            --board-bg: #4a07c8;  
-            --player1: #39ff14;      /** Player 1's piece color **/
-            --player2: #00ffff;     /** Player 2's piece color **/
+            --board-bg: @ColorTranslator.ToHtml(BoardColor);
+            --player1: @ColorTranslator.ToHtml(Player1Color);
+            --player2: @ColorTranslator.ToHtml(Player2Color);
         }
     </style>
 </HeadContent>
@@ -44,6 +45,15 @@
 </div>
 
 @code {
+[Parameter]
+public Color BoardColor { get; set; } = ColorTranslator.FromHtml("MidnightBlue");
+
+[Parameter]
+public Color Player1Color { get; set; } = ColorTranslator.FromHtml("HotPink");
+
+[Parameter]
+public Color Player2Color { get; set; } = ColorTranslator.FromHtml("Cyan");
+
     private string[] pieces = new string[42];
 private string winnerMessage = string.Empty;
 private string errorMessage = string.Empty;
