@@ -1,6 +1,14 @@
 @using ConnectFour
 @inject GameState State
 
+<nav>
+    @for (byte i = 0; i < 7; i++)
+    {
+        var col = i;
+        <span title="Click to play a piece" @onclick="() => PlayPiece(col)">🔽</span>
+    }
+</nav>
+
 <h3>Board</h3>
 <HeadContent>
     <style>
@@ -13,19 +21,28 @@
 </HeadContent>
 
 <div>
-   <div class="board">
-      @for (var i = 0; i < 42; i++)
-      {
-         <span class="container">
+    <div class="board">
+    @for (var i = 0; i < 42; i++)
+    {
+        <span class="container">
             <span></span>
-         </span>
-      }
-   </div>
+        </span>
+    }
+    </div>
+    @for (var i = 0; i < 42; i++)
+    {
+       <span class="@pieces[i]"></span>
+    }
 </div>
 
 @code {
-    protected override void OnInitialized()
+    private string[] pieces = new string[42];
+
+    private void PlayPiece(byte col)
     {
-        State.ResetBoard();
+        var player = State.PlayerTurn;
+        var turn = State.CurrentTurn;
+        var landingRow = State.PlayPiece(col);
+        pieces[turn] = $"player{player} col{col} drop{landingRow}";
     }
 }
