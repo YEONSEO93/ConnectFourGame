@@ -1,3 +1,6 @@
+@using ConnectFour
+@inject GameState State
+
 <h3>Board</h3>
 <HeadContent>
     <style>
@@ -21,5 +24,8 @@
 </div>
 
 @code {
-
+    protected override void OnInitialized()
+    {
+        State.ResetBoard();
+    }
 }
