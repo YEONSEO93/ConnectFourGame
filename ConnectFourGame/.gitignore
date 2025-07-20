@@ -1,0 +1,17 @@
+# Build artifacts
+bin/
+obj/
+*.dll
+*.exe
+*.log
+*.gz
+*.bundle.css
+*.rz.scp.css
+
+# IDE
+.vs/
+*.user
+
+# Web
+wwwroot/lib/
+PizzaPlace/wwwroot/lib/
