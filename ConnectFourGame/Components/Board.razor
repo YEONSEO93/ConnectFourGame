@@ -9,6 +9,14 @@
     }
 </nav>
 
+<article>
+    @winnerMessage  
+    <button style="@ResetStyle" @onclick="ResetGame">Reset the game</button>
+    <br />
+    <span class="alert-danger">@errorMessage</span>
+    <span class="alert-info">@CurrentTurn</span>
+</article>
+
 <h3>Board</h3>
 <HeadContent>
     <style>
@@ -37,12 +45,54 @@
 
 @code {
     private string[] pieces = new string[42];
+private string winnerMessage = string.Empty;
+private string errorMessage = string.Empty;
+
+private string CurrentTurn => (winnerMessage == string.Empty) ? $"Player {State.PlayerTurn}'s Turn" : "";
+private string ResetStyle => (winnerMessage == string.Empty) ? "display: none;" : "";
 
     private void PlayPiece(byte col)
     {
-        var player = State.PlayerTurn;
-        var turn = State.CurrentTurn;
-        var landingRow = State.PlayPiece(col);
-        pieces[turn] = $"player{player} col{col} drop{landingRow}";
+        // ends the turn if the game is over
+        if (!string.IsNullOrEmpty(winnerMessage))
+            return;
+
+        errorMessage = string.Empty;
+
+        try
+        {
+            var player = State.PlayerTurn;
+            var turn = State.CurrentTurn;
+            var landingRow = State.PlayPiece(col);
+            int landingIndex = (landingRow - 1) * 7 + col;
+
+            pieces[landingIndex] = $"player{player} col{col} drop{landingRow}";
+        }
+        catch (ArgumentException ex)
+        {
+            errorMessage = ex.Message;
+        }
+
+        // display who's the winner
+        winnerMessage = State.CheckForWin() switch
+        {
+            GameState.WinState.Player1_Wins => "Congrats! Player 1 Wins! 🎉",
+            GameState.WinState.Player2_Wins => "Congrats! Player 2 Wins! 🎉",
+            GameState.WinState.Tie => "It's a tie! 🤝",
+            _ => ""
+        };
+    }
+
+    private void ResetGame()
+    {
+        State.ResetBoard();
+        winnerMessage = string.Empty;
+        errorMessage = string.Empty;
+        pieces = new string[42];
+    }
+
+    protected override void OnInitialized()
+    {
+        ResetGame();
     }
 }
